@@ -49,7 +49,7 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 600px;
             padding: 2rem;
             position: relative;
             z-index: 1;
@@ -93,8 +93,14 @@
             font-weight: 300;
         }
 
-        .form-group {
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
             margin-bottom: 1.5rem;
+        }
+
+        .form-group {
             position: relative;
         }
 
@@ -245,6 +251,27 @@
         .loading .spinner {
             display: block;
         }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            .glass-card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            input {
+                padding: 0.875rem 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -258,21 +285,23 @@
             </div>
 
             <form id="predictionForm">
-                <div class="form-group">
-                    <label for="sepal_length">Sepal Length (cm)</label>
-                    <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0" placeholder="e.g. 5.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="sepal_width">Sepal Width (cm)</label>
-                    <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" placeholder="e.g. 3.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="petal_length">Petal Length (cm)</label>
-                    <input type="number" id="petal_length" name="petal_length" step="0.1" min="0" placeholder="e.g. 1.4" required>
-                </div>
-                <div class="form-group">
-                    <label for="petal_width">Petal Width (cm)</label>
-                    <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" placeholder="e.g. 0.2" required>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sepal_length">Sepal Length (cm)</label>
+                        <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0" placeholder="e.g. 5.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sepal_width">Sepal Width (cm)</label>
+                        <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" placeholder="e.g. 3.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="petal_length">Petal Length (cm)</label>
+                        <input type="number" id="petal_length" name="petal_length" step="0.1" min="0" placeholder="e.g. 1.4" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="petal_width">Petal Width (cm)</label>
+                        <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" placeholder="e.g. 0.2" required>
+                    </div>
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
