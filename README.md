@@ -18,22 +18,6 @@ A streamlined MLOps pipeline that trains a Random Forest model using `scikit-lea
 
 ---
 
-## 📸 Screenshots
-
-> **Note:** Update these screenshots with the latest premium UI!
-
-### 💻 Desktop View
-<p align="center">
-  <img src="./static/desktop.png" alt="Desktop View Screenshot" width="700">
-</p>
-
-### 📱 Access on Mobile
-<p align="center">
-  <img src="./static/qr.png" alt="Live App QR Code" width="200">
-</p>
-
----
-
 ## 📂 Project Structure
 
 ```text
