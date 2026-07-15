@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Explorer | Premium Classification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ url_for("static", filename="image.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            filter: blur(12px) brightness(0.4);
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: floatIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+        }
+
+        .submit-btn:hover::before {
+            opacity: 1;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-success {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .result-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .result-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .result-value.error {
+            color: #fca5a5;
+            font-size: 1.25rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Loading animation */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading .btn-text {
+            display: none;
+        }
+        
+        .loading .spinner {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    
+    <div class="container">
+        <div class="glass-card">
+            <div class="header">
+                <h1>Iris Explorer</h1>
+                <p class="subtitle">Enter botanical measurements for classification</p>
+            </div>
+
+            <form id="predictionForm">
+                <div class="form-group">
+                    <label for="sepal_length">Sepal Length (cm)</label>
+                    <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0" placeholder="e.g. 5.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="sepal_width">Sepal Width (cm)</label>
+                    <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" placeholder="e.g. 3.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="petal_length">Petal Length (cm)</label>
+                    <input type="number" id="petal_length" name="petal_length" step="0.1" min="0" placeholder="e.g. 1.4" required>
+                </div>
+                <div class="form-group">
+                    <label for="petal_width">Petal Width (cm)</label>
+                    <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" placeholder="e.g. 0.2" required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Discover Species</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <div id="resultBox" class="result-container">
+                <div class="result-title" id="resultTitle">Predicted Species</div>
+                <div class="result-value" id="resultText"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = document.getElementById('submitBtn');
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            const resultTitle = document.getElementById('resultTitle');
+            
+            // UI Loading state
+            submitBtn.classList.add('loading');
+            resultBox.classList.remove('show', 'result-success', 'result-error');
+            
+            const formData = new FormData(form);
+            const payload = {
+                sepal_length: parseFloat(formData.get('sepal_length')),
+                sepal_width: parseFloat(formData.get('sepal_width')),
+                petal_length: parseFloat(formData.get('petal_length')),
+                petal_width: parseFloat(formData.get('petal_width'))
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultTitle.innerText = "Predicted Species";
+                    resultText.innerText = data.class;
+                    resultText.classList.remove('error');
+                    resultBox.className = 'result-container result-success show';
+                } else {
+                    throw new Error(data.error || 'Classification failed');
+                }
+            } catch (err) {
+                resultTitle.innerText = "Error";
+                resultText.innerText = err.message;
+                resultText.classList.add('error');
+                resultBox.className = 'result-container result-error show';
+            } finally {
+                submitBtn.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html>
