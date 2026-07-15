@@ -1,4 +1,4 @@
-# 🌸 Iris Flower Classifier API & Web UI
+# 🌸 Iris Flower Classification
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-API-green.svg)](https://flask.palletsprojects.com/)
