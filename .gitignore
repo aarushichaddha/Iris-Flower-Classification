@@ -8,4 +8,5 @@ __pycache__/
 
 # Model weights
 *.pkl
+!iris_model.pkl
 context.md
